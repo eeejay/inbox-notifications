@@ -1,0 +1,7 @@
+mail.json
+node_modules
+test_profile
+.git
+.gitignore
+.eslintrc
+test

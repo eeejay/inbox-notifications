@@ -1,0 +1,19 @@
+{
+  "title": "Inbox™ Notifications",
+  "name": "inbox-notifications",
+  "version": "0.0.1",
+  "description": "Adds desktop notifications and unread count in title of Google Inbox.",
+  "main": "index.js",
+  "author": "Eitan Isaacson",
+  "engines": {
+    "firefox": ">=45.0a1"
+  },
+  "license": "MPL-2.0",
+  "keywords": [
+    "jetpack"
+  ],
+  "devDependencies": {
+    "emailjs": "^1.0.4"
+  },
+  "icon" : "resource://@inbox-enhancer/icon.png"
+}

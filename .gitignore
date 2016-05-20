@@ -1,0 +1,4 @@
+test_profile
+*.xpi
+mail.json
+node_modules
