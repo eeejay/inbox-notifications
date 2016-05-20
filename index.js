@@ -1,8 +1,9 @@
 const pageMod = require("sdk/page-mod");
 const self = require("sdk/self");
 const { XMLHttpRequest } = require("sdk/net/xhr");
-var notifications = require("sdk/notifications");
-let { getFavicon } = require("sdk/places/favicon");
+const notifications = require("sdk/notifications");
+const { getFavicon } = require("sdk/places/favicon");
+const _ = require("sdk/l10n").get;
 
 function getMailFeed(accountId) {
   getFeed(accountId).then()
@@ -31,16 +32,18 @@ pageMod.PageMod({
   onAttach: function(worker) {
     console.log("Attached");
     let faviconPromise = getFavicon(worker.tab);
+
     worker.port.on("getMailFeed", accountId => {
       getFeed(accountId).then(feed => {
         worker.port.emit("mailFeed", feed);
       }).catch(e => console.warn("error? " + e));
     });
+
     worker.port.on("notify", message => {
       faviconPromise.then(faviconUrl => {
         console.log("Notify:", JSON.stringify(message));
         let n =notifications.notify({
-          title: message.title,
+          title: _(...message.title),
           text: message.body,
           iconURL: faviconUrl,
           onClick: () => {

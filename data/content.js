@@ -93,6 +93,13 @@ class MessageFetcher {
     })
   }
 
+  localize(strings) {
+    return new Promise(resolve => {
+      self.port.once("localized", resolve);
+      self.port.emit("localize", strings);
+    });
+  }
+
   getFeed() {
     return new Promise(resolve => {
       self.port.once("mailFeed", response => {
@@ -102,6 +109,30 @@ class MessageFetcher {
       let accountId = window.location.pathname.substr(3, 1) || 0;
       self.port.emit("getMailFeed", accountId);
     });
+  }
+
+  notify(messages) {
+    if (messages.length) {
+      let notification = {};
+
+      if (messages.length == 1) {
+        notification = {
+          title: ["new_message", messages[0].sender_name],
+          body: messages[0].subject
+        };
+      } else {
+        let senders = new Set(messages.map(e => e.sender_name));
+        notification = {
+          title: ["new_messages", messages.length],
+          body: Array.from(senders).join(', ')
+        };
+      }
+      if (!document.hasFocus()) {
+        self.port.emit("notify", notification);
+      } else {
+        console.log("Focused, so not notifying:", JSON.stringify(notification));
+      }
+    }
   }
 
   refresh() {
@@ -125,27 +156,7 @@ class MessageFetcher {
         "New:", newMessages.length,
         "Cached:", this.seenMessages.size);
 
-      if (newMessages.length) {
-        let notification = {};
-
-        if (newMessages.length == 1) {
-          notification = {
-            title: `New Message from ${newMessages[0].sender_name}`,
-            body: newMessages[0].subject
-          };
-        } else {
-          let senders = new Set(newMessages.map(e => e.sender_name));
-          notification = {
-            title: `${newMessages.length} New Messages`,
-            body: Array.from(senders).join(', ')
-          };
-        }
-        if (!document.hasFocus()) {
-          self.port.emit("notify", notification);
-        } else {
-          console.log("Focused, so not notifying:", JSON.stringify(notification));
-        }
-      }
+      this.notify(newMessages);
 
       return { unread: unread, newMessages: newMessages };
     });
