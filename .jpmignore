@@ -5,3 +5,6 @@ test_profile
 .gitignore
 .eslintrc
 test
+.jpmignore
+icon.svg
+testmail.js
