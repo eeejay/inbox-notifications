@@ -5,6 +5,8 @@
   "description": "Adds desktop notifications and unread count in title of Google Inbox.",
   "main": "index.js",
   "author": "Eitan Isaacson",
+  "homepage": "https://github.com/eeejay/inbox-notifications",
+  "private": true,
   "engines": {
     "firefox": ">=45.0a1"
   },
