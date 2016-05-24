@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+  <title>Gmail - Inbox for foo@example.com</title>
+  <tagline>New messages in your Gmail Inbox</tagline>
+  <fullcount>2</fullcount>
+  <link rel="alternate" href="https://mail.google.com/mail/u/1" type="text/html"/>
+  <modified>2016-05-24T02:29:42Z</modified>
+  <entry>
+    <title>Message One</title>
+    <summary>This is message one</summary>
+    <author>
+      <name>Eitan Isaacson</name>
+      <email>eitan@monotonous.org</email>
+    </author>
+  </entry>
+  <entry>
+    <title>Message Two</title>
+    <summary>This is message two</summary>
+    <author>
+      <name>Shirley Temple</name>
+      <email>shirley@temple.org</email>
+    </author>
+  </entry>
+  <entry>
+    <title>Message Two</title>
+    <summary>This is message three</summary>
+    <author>
+      <name>Eitan Isaacson</name>
+      <email>eitan@monotonous.org</email>
+    </author>
+  </entry>
+</feed>

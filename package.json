@@ -13,11 +13,15 @@
     "jetpack"
   ],
   "devDependencies": {
-    "emailjs": "^1.0.4"
+    "emailjs": "^1.0.4",
+    "static-server": "^2.0.2"
   },
-  "icon" : {
+  "icon": {
     "32": "icon.png",
     "48": "icon48.png",
     "64": "icon64.png"
+  },
+  "scripts": {
+    "test": "node ./test/run.js"
   }
 }

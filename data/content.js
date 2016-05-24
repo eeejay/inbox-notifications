@@ -72,9 +72,13 @@ class TitleMutator {
 
   mutateTitle() {
     this.unobserve();
+    let oldTitle = this.titleElem.textContent;
     this.titleElem.textContent = (this.unreadCount == 0) ?
       this.origTitle :
       this.origTitle.replace(/^Inbox/, `Inbox (${this.unreadCount})`);
+    if (oldTitle != this.titleElem.textContent) {
+      self.port.emit("title-changed", { old: oldTitle, new: this.titleElem.textContent});
+    }
     this.observe();
   }
 }
