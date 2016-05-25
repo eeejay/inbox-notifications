@@ -1,7 +1,7 @@
 {
   "title": "Inbox™ Notifications",
   "name": "inbox-notifications",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Adds desktop notifications and unread count in title of Google Inbox.",
   "main": "index.js",
   "author": "Eitan Isaacson",
