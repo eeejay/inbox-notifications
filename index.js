@@ -50,6 +50,7 @@ pageMod.PageMod({
   include: ["http://inbox.google.com/*", "https://inbox.google.com/*"],
   contentScriptFile: self.data.url("content.js"),
   attachTo: ["existing", "top"],
+  contentScriptWhen: "ready",
   onAttach: function (worker) {
     console.debug("Attached");
 
@@ -61,7 +62,7 @@ pageMod.PageMod({
       titleMutator.unreadCount = info.unread;
     });
 
-    worker.on("detach", () => {
+    worker.once("detach", () => {
       titleMutator.disconnect();
       titleMutator = null;
       messageFetcher = null;
