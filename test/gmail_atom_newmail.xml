@@ -32,4 +32,14 @@
       <email>eitan@monotonous.org</email>
     </author>
   </entry>
+  <entry>
+    <title>Message Four</title>
+    <summary>This is message four</summary>
+    <id>1464136009774</id>
+    <author>
+      <name>Egg Head</name>
+      <email>egghead@example.com</email>
+    </author>
+  </entry>
+
 </feed>

@@ -1,28 +1,47 @@
 const pageMod = require("sdk/page-mod");
 const self = require("sdk/self");
-const { XMLHttpRequest } = require("sdk/net/xhr");
+const { TitleMutator } = require("./title-mutator");
+const { MessageFetcher } = require("./message-fetcher");
 const notifications = require("sdk/notifications");
 const { getFavicon } = require("sdk/places/favicon");
 const _ = require("sdk/l10n").get;
 
-function getMailFeed(accountId) {
-  getFeed(accountId).then()
+function hasFocus(worker) {
+  return new Promise(resolve => {
+    worker.port.once('focus', resolve);
+    worker.port.emit('has-focus');
+  });
 }
 
-function getFeed(accountId) {
-  return new Promise((resolve, reject) => {
-    let xhr = new XMLHttpRequest();
-    xhr.onload = function() {
-      resolve(xhr.responseText);
+function notify(tab, faviconPromise, messages) {
+  if (messages.length) {
+    let notification = {};
+
+    if (messages.length == 1) {
+      notification = {
+        title: _("new_message", messages[0].sender_name),
+        text: messages[0].subject
+      };
+    } else {
+      let senders = new Set(messages.map(e => e.sender_name));
+      notification = {
+        title: _("new_messages", messages.length),
+        text: Array.from(senders).join(', ')
+      };
     }
 
-    xhr.onerror = function() {
-      reject("Error while getting XML.");
-    }
-
-    xhr.open("GET", `https://mail.google.com/mail/u/${accountId}/feed/atom`, true);
-    xhr.send();
-  });
+    faviconPromise.then(faviconUrl => {
+      notifications.notify({
+        title: notification.title,
+        text: notification.text,
+        iconURL: faviconUrl,
+        onClick: () => {
+          tab.window.activate();
+          tab.activate();
+        }
+      });
+    });
+  }
 }
 
 pageMod.PageMod({
@@ -30,28 +49,33 @@ pageMod.PageMod({
   contentScriptFile: self.data.url("content.js"),
   attachTo: ["existing", "top"],
   onAttach: function(worker) {
-    console.log("Attached");
+    console.debug("Attached");
+
+    let titleMutator = new TitleMutator(worker.tab);
+    let messageFetcher = new MessageFetcher(worker.tab);
     let faviconPromise = getFavicon(worker.tab);
 
-    worker.port.on("getMailFeed", accountId => {
-      getFeed(accountId).then(feed => {
-        worker.port.emit("mailFeed", feed);
-      }).catch(e => console.warn("error? " + e));
+    messageFetcher.refresh().then(info => {
+      titleMutator.unreadCount = info.unread;
     });
 
-    worker.port.on("notify", message => {
-      faviconPromise.then(faviconUrl => {
-        console.log("Notify:", JSON.stringify(message));
-        let n =notifications.notify({
-          title: _(...message.title),
-          text: message.body,
-          iconURL: faviconUrl,
-          onClick: () => {
-            worker.tab.window.activate();
-            worker.tab.activate();
+    worker.on('detach', () => {
+      titleMutator.disconnect();
+      titleMutator = null;
+      messageFetcher = null;
+    });
+
+    worker.port.on("refresh-feed", () => {
+      messageFetcher.refresh().then(info => {
+        titleMutator.unreadCount = info.unread;
+        hasFocus(worker).then(focused => {
+          if (!focused) {
+            notify(worker.tab, faviconPromise, info.newMessages);
+          } else {
+            console.debug("inbox has focus, not notifying");
           }
         });
-      });
+      }).catch(err => console.warn(err));
     });
   }
 });
