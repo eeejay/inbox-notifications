@@ -3,40 +3,40 @@
 const { getBrowserForTab } = require("sdk/tabs/utils");
 const { viewFor } = require("sdk/view/core");
 
-class TitleMutator {
-  constructor(tab) {
-    this.tab = tab;
+function TitleMutator(tab) {
+  this.tab = tab;
 
-    this._unreadCount = 0;
+  this._unreadCount = 0;
 
-    this.mutatePromises = [];
+  this.mutatePromises = [];
 
-    this.tabActivated = this.tabActivated.bind(this);
-    this.connect();
-  }
+  this.tabActivated = this.tabActivated.bind(this);
+  this.connect();
+}
 
+TitleMutator.prototype = {
   get unreadCount() {
     return this._unreadCount;
-  }
+  },
 
   set unreadCount(unread) {
     console.debug("unreadCount set", unread);
     this._unreadCount = unread;
     this.mutateTitle();
-  }
+  },
 
-  tabActivated() {
+  tabActivated: function () {
     console.debug("wut!!", this.unreadCount);
     this.unreadCount = 0;
-  }
+  },
 
-  createMutatePromise() {
+  createMutatePromise: function () {
     return new Promise(resolve => {
       this.mutatePromises.push(resolve);
     });
-  }
+  },
 
-  handleEvent() {
+  handleEvent: function () {
     if (this.tab.title == this.newTitle) {
       this.mutatePromises.map(resolve => resolve(this.newTitle));
       this.mutatePromises = [];
@@ -44,21 +44,21 @@ class TitleMutator {
     } else {
       this.mutateTitle();
     }
-  }
+  },
 
-  connect() {
+  connect: function () {
     let browser = getBrowserForTab(viewFor(this.tab));
     browser.addEventListener("DOMTitleChanged", this);
     this.tab.on("activate", this.tabActivated);
-  }
+  },
 
-  disconnect() {
+  disconnect: function () {
     let browser = getBrowserForTab(viewFor(this.tab));
     browser.removeEventListener("DOMTitleChanged", this);
     this.tab.removeListener("activate", this.tabActivated);
-  }
+  },
 
-  mutateTitle() {
+  mutateTitle: function () {
     let oldTitle = this.tab.title;
     let replaceString = (this.unreadCount == 0) ?
       "Inbox " : `Inbox (${this.unreadCount}) `;
@@ -68,6 +68,6 @@ class TitleMutator {
       contentScript: `document.title = "${this.newTitle}";`,
     });
   }
-}
+};
 
 exports.TitleMutator = TitleMutator;
