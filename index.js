@@ -21,11 +21,11 @@ function notify(tab, faviconPromise, messages) {
 
     if (messages.length == 1) {
       notification = {
-        title: _("new_message", messages[0].sender_name),
+        title: _("new_message", messages[0].senderName),
         text: messages[0].subject
       };
     } else {
-      let senders = new Set(messages.map(e => e.sender_name));
+      let senders = new Set(messages.map(e => e.senderName));
       notification = {
         title: _("new_messages", messages.length),
         text: Array.from(senders).join(", ")
