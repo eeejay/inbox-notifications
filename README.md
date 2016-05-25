@@ -5,7 +5,7 @@ Adds unread count in title and desktop notifications
 `jpm run`
 
 ## To package
-`jpm xpi`
+`npm package`
 
 ## To run tests
 `npm test`

@@ -27,7 +27,10 @@
     "64": "icon64.png"
   },
   "scripts": {
+    "eslint": "eslint *.js data/*.js test/*.js",
     "test": "node ./test/run.js",
-    "eslint": "eslint *.js data/*.js test/*.js"
+    "pretest": "npm run eslint",
+    "package": "jpm xpi",
+    "prepackage": "npm run eslint"
   }
 }
