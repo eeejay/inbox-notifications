@@ -1,3 +1,5 @@
+"use strict";
+
 const pageMod = require("sdk/page-mod");
 const self = require("sdk/self");
 const { TitleMutator } = require("./title-mutator");
@@ -8,8 +10,8 @@ const _ = require("sdk/l10n").get;
 
 function hasFocus(worker) {
   return new Promise(resolve => {
-    worker.port.once('focus', resolve);
-    worker.port.emit('has-focus');
+    worker.port.once("focus", resolve);
+    worker.port.emit("has-focus");
   });
 }
 
@@ -26,7 +28,7 @@ function notify(tab, faviconPromise, messages) {
       let senders = new Set(messages.map(e => e.sender_name));
       notification = {
         title: _("new_messages", messages.length),
-        text: Array.from(senders).join(', ')
+        text: Array.from(senders).join(", ")
       };
     }
 
@@ -48,7 +50,7 @@ pageMod.PageMod({
   include: ["http://inbox.google.com/*", "https://inbox.google.com/*"],
   contentScriptFile: self.data.url("content.js"),
   attachTo: ["existing", "top"],
-  onAttach: function(worker) {
+  onAttach: function (worker) {
     console.debug("Attached");
 
     let titleMutator = new TitleMutator(worker.tab);
@@ -59,7 +61,7 @@ pageMod.PageMod({
       titleMutator.unreadCount = info.unread;
     });
 
-    worker.on('detach', () => {
+    worker.on("detach", () => {
       titleMutator.disconnect();
       titleMutator = null;
       messageFetcher = null;

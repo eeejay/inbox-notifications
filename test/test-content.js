@@ -1,16 +1,18 @@
+"use strict";
+
 const self = require("sdk/self");
 const tabs = require("sdk/tabs");
 
 let addListItem = (doc) => {
-  var d = doc.createElement("div");
+  let d = doc.createElement("div");
   d.textContent = "New message " + Date.now();
   d.setAttribute("role", "listitem");
   doc.getElementById("mainlist").appendChild(d);
-}
+};
 
 function loadAndAttach(contentScriptFile, contentScript) {
   return new Promise(resolve => {
-    tabs.on('load', tab => {
+    tabs.on("load", tab => {
       resolve(tab.attach({
         contentScriptFile: contentScriptFile,
         contentScript: contentScript
@@ -26,7 +28,7 @@ function messagePromise(port, name) {
   });
 }
 
-exports["test content mutation observer"]  = function* (assert) {
+exports["test content mutation observer"] = function* (assert) {
   let worker = yield loadAndAttach(self.data.url("content.js"));
   let getMailFeed = messagePromise(worker.port, "refresh-feed");
   worker.tab.attach({ contentScript: `(${addListItem})(document)` });

@@ -1,4 +1,5 @@
-const tabs = require("sdk/tabs");
+"use strict";
+
 const { MessageFetcher } = require("../message-fetcher");
 
 exports["test message fetcher"] = function* (assert) {
@@ -10,7 +11,7 @@ exports["test message fetcher"] = function* (assert) {
   assert.ok(info.newMessages.length == 0, "No new messages");
   messageFetcher.testUrl = "http://localhost:1337/test/gmail_atom_newmail.xml";
   info = yield messageFetcher.refresh();
-  assert.ok(info.newMessages.length == 1, "One new message!");  
+  assert.ok(info.newMessages.length == 1, "One new message!");
 };
 
 require("sdk/test").run(exports);

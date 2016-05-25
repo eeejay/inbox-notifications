@@ -1,12 +1,16 @@
-const spawn = require('child_process').spawn;
+"use strict";
 
-let server = spawn("static-server", ["-p", "1337"], { stdio: 'inherit' });
+/* eslint-env node */
 
-let test_args = process.argv.slice(2);
-test_args.unshift("test");
+const spawn = require("child_process").spawn;
 
-let test = spawn("jpm", test_args, { stdio: 'inherit' });
+let server = spawn("static-server", ["-p", "1337"], { stdio: "inherit" });
 
-test.on('close', (code) => {
+let testArgs = process.argv.slice(2);
+testArgs.unshift("test");
+
+let test = spawn("jpm", testArgs, { stdio: "inherit" });
+
+test.on("close", (code) => {
   server.kill();
 });

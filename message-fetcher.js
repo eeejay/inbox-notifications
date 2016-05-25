@@ -1,3 +1,5 @@
+"use strict";
+
 const { XMLHttpRequest } = require("sdk/net/xhr");
 
 class Message {
@@ -10,23 +12,19 @@ class Message {
   }
 
   get subject() {
-   return this.entry.querySelector("title").textContent;
+    return this.entry.querySelector("title").textContent;
   }
 
   get summary() {
     return this.entry.querySelector("summary").textContent;
   }
 
-  get sender_name() {
-   return this.entry.querySelector("author > name").textContent;
+  get senderName() {
+    return this.entry.querySelector("author > name").textContent;
   }
 
-  get sender_email() {
-   return this.entry.querySelector("author > email").textContent;
-  }
-
-  toString() {
-    return `[Message: "${this.subject}" From: ${this.sender_name} <${this.sender_email}>]`;
+  get senderEmail() {
+    return this.entry.querySelector("author > email").textContent;
   }
 }
 
@@ -47,13 +45,13 @@ class MessageFetcher {
 
     return new Promise((resolve, reject) => {
       let xhr = new XMLHttpRequest();
-      xhr.onload = function() {
+      xhr.onload = function () {
         resolve(xhr.responseXML);
-      }
+      };
 
-      xhr.onerror = function() {
+      xhr.onerror = function () {
         reject("Error while getting XML.");
-      }
+      };
 
       let url =
        this.testUrl || `https://mail.google.com/mail/u/${accountId}/feed/atom`;

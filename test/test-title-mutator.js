@@ -1,16 +1,18 @@
+"use strict";
+
 const tabs = require("sdk/tabs");
 const { TitleMutator } = require("../title-mutator");
 
 function loadTab(argument) {
   return new Promise(resolve => {
-    tabs.once('load', resolve);
+    tabs.once("load", resolve);
     tabs.open("http://localhost:1337/test/mock-inbox.html");
   });
 }
 
 function activateTab(tab) {
   return new Promise(resolve => {
-    tab.once('activate', resolve);
+    tab.once("activate", resolve);
     tab.activate();
   });
 }
@@ -53,11 +55,10 @@ exports["test title mutator"] = function* (assert) {
   titleMutated = titleMutator.createMutatePromise();
   yield activateTab(tab);
   newTitle = yield titleMutated;
-  assert.notEqual(oldTitle, newTitle, "the tab title changed after it was activated");
+  assert.notEqual(oldTitle, newTitle, "title changed after tab activated");
 
   tab2.close();
   tab.close();
 };
-
 
 require("sdk/test").run(exports);

@@ -8,3 +8,4 @@ test
 .jpmignore
 icon.svg
 testmail.js
+npm-debug.log

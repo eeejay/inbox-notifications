@@ -1,3 +1,5 @@
+"use strict";
+
 const { getBrowserForTab } = require("sdk/tabs/utils");
 const { viewFor } = require("sdk/view/core");
 
@@ -31,7 +33,7 @@ class TitleMutator {
   createMutatePromise() {
     return new Promise(resolve => {
       this.mutatePromises.push(resolve);
-    })
+    });
   }
 
   handleEvent() {
@@ -58,7 +60,8 @@ class TitleMutator {
 
   mutateTitle() {
     let oldTitle = this.tab.title;
-    let replaceString = (this.unreadCount == 0) ? `Inbox ` : `Inbox (${this.unreadCount}) `;
+    let replaceString = (this.unreadCount == 0) ?
+      "Inbox " : `Inbox (${this.unreadCount}) `;
     this.newTitle = oldTitle.replace(/^Inbox (\(\d+\)\s)?/, replaceString);
     console.debug("mutated:", oldTitle, "=>", this.newTitle);
     this.tab.attach({
