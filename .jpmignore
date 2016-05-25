@@ -9,3 +9,4 @@ test
 icon.svg
 testmail.js
 npm-debug.log
+*.xpi
