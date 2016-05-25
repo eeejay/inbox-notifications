@@ -2,38 +2,38 @@
 
 const { XMLHttpRequest } = require("sdk/net/xhr");
 
-class Message {
-  constructor(entry) {
-    this.entry = entry;
-  }
+function Message(entry) {
+  this.entry = entry;
+}
 
+Message.prototype = {
   get id() {
     return this.entry.querySelector("id").textContent;
-  }
+  },
 
   get subject() {
     return this.entry.querySelector("title").textContent;
-  }
+  },
 
   get summary() {
     return this.entry.querySelector("summary").textContent;
-  }
+  },
 
   get senderName() {
     return this.entry.querySelector("author > name").textContent;
-  }
+  },
 
   get senderEmail() {
     return this.entry.querySelector("author > email").textContent;
   }
+};
+
+function MessageFetcher(tab) {
+  this.tab = tab;
+  this.seenMessages = new Set();
 }
 
-class MessageFetcher {
-  constructor(tab) {
-    this.tab = tab;
-    this.seenMessages = new Set();
-  }
-
+MessageFetcher.prototype = {
   getFeed() {
     let accountId = 0;
     if (this.tab) {
@@ -60,7 +60,7 @@ class MessageFetcher {
       xhr.open("GET", url, true);
       xhr.send();
     });
-  }
+  },
 
   refresh() {
     console.debug("refreshing");
@@ -86,6 +86,6 @@ class MessageFetcher {
       return { unread: unread, newMessages: newMessages };
     });
   }
-}
+};
 
 exports.MessageFetcher = MessageFetcher;
