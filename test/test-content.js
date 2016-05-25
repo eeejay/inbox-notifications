@@ -11,14 +11,19 @@ let addListItem = (doc) => {
 };
 
 function loadAndAttach(contentScriptFile, contentScript) {
+  let url = "http://localhost:1337/test/mock-inbox.html";
   return new Promise(resolve => {
-    tabs.on("load", tab => {
-      resolve(tab.attach({
-        contentScriptFile: contentScriptFile,
-        contentScript: contentScript
-      }));
-    });
-    tabs.open("http://localhost:1337/test/mock-inbox.html");
+    tabs.open(url);
+    let onLoad = tab => {
+      if (tab.url == url) {
+        tabs.off("load", onLoad);
+        resolve(tab.attach({
+          contentScriptFile: contentScriptFile,
+          contentScript: contentScript
+        }));
+      }
+    };
+    tabs.on("load", onLoad);
   });
 }
 

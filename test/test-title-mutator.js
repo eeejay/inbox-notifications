@@ -3,10 +3,10 @@
 const tabs = require("sdk/tabs");
 const { TitleMutator } = require("../title-mutator");
 
-function loadTab(argument) {
+function loadTab(url = "http://localhost:1337/test/mock-inbox.html") {
   return new Promise(resolve => {
     tabs.once("load", resolve);
-    tabs.open("http://localhost:1337/test/mock-inbox.html");
+    tabs.open(url);
   });
 }
 

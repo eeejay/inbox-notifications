@@ -2,7 +2,7 @@
 
 /* eslint-env browser */
 
-console.log("content.js attached");
+console.debug("content.js attached");
 
 let observer = new MutationObserver(mutations => {
   let listitemAdded = () => {
@@ -30,8 +30,14 @@ let observer = new MutationObserver(mutations => {
   }
 });
 
-observer.observe(document.querySelector('[role="main"]'),
-      { characterData: true, subtree: true, childList: true });
+let mainContainer = document.querySelector('[role="main"]');
+
+if (mainContainer) {
+  observer.observe(mainContainer,
+    { characterData: true, subtree: true, childList: true });
+} else {
+  console.warn("no main container found");
+}
 
 self.port.on("has-focus", () => {
   self.port.emit("focus", document.hasFocus());
