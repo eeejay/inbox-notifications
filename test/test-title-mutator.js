@@ -30,8 +30,9 @@ exports["test title mutator"] = function* (assert) {
   titleMutator.unreadCount = 2;
   let newTitle = yield titleMutated;
   assert.notEqual(newTitle, oldTitle, "title changed");
-  assert.ok(newTitle.startsWith("Inbox (2)"), "title changed correctly");
-  assert.equal(newTitle, tab.title, "tab title is set");
+  assert.ok(newTitle.startsWith("Inbox (2)"),
+    "title changed correctly: " + newTitle);
+  assert.equal(newTitle, tab.title, "tab title is set 1");
 
   oldTitle = newTitle;
   titleMutated = titleMutator.createMutatePromise();
@@ -39,15 +40,16 @@ exports["test title mutator"] = function* (assert) {
   newTitle = yield titleMutated;
   assert.notEqual(newTitle, oldTitle, "title changed");
   assert.equal(newTitle, "New chat from blah!", "title untouched");
-  assert.equal(newTitle, tab.title, "tab title is set");
+  assert.equal(newTitle, tab.title, "tab title is set 2");
 
   oldTitle = newTitle;
   titleMutated = titleMutator.createMutatePromise();
   changeTitle("Inbox – foo@example.com");
   newTitle = yield titleMutated;
   assert.notEqual(newTitle, oldTitle, "title changed");
-  assert.ok(newTitle.startsWith("Inbox (2)"), "title changed correctly");
-  assert.equal(newTitle, tab.title, "tab title is set");
+  assert.ok(newTitle.startsWith("Inbox (2)"),
+    "title changed correctly: " + newTitle);
+  assert.equal(newTitle, tab.title, "tab title is set 3");
 
   oldTitle = newTitle;
   let tab2 = yield loadTab("about:blank");

@@ -40,14 +40,20 @@ TitleMutator.prototype = {
     });
   },
 
+  resolveMutatePromises: function (title) {
+    this.mutatePromises.map(resolve => resolve(this.tab.title));
+    this.mutatePromises = [];
+  },
+
+  contentChangeTitle: function (title) {
+    return new Promise(resolve => {
+      this.worker.port.once("changed-title", resolve);
+      this.worker.port.emit("change-title", title);
+    });
+  },
+
   handleEvent: function () {
-    if (this.tab.title == this.newTitle) {
-      this.mutatePromises.map(resolve => resolve(this.newTitle));
-      this.mutatePromises = [];
-      delete this.newTitle;
-    } else {
-      this.mutateTitle();
-    }
+    this.mutateTitle();
   },
 
   connect: function () {
@@ -66,9 +72,11 @@ TitleMutator.prototype = {
     let oldTitle = this.tab.title;
     let replaceString = (this.unreadCount == 0) ?
       "Inbox " : `Inbox (${this.unreadCount}) `;
-    this.newTitle = oldTitle.replace(/^Inbox (\(\d+\)\s)?/, replaceString);
-    console.debug("mutated:", oldTitle, "=>", this.newTitle);
-    this.worker.port.emit("change-title", this.newTitle);
+    let newTitle = oldTitle.replace(/^Inbox (\(\d+\)\s)?/, replaceString);
+    console.debug("mutated:", oldTitle, "=>", newTitle);
+    this.contentChangeTitle(newTitle).then(title => {
+      this.resolveMutatePromises(title);
+    });
   }
 };
 
