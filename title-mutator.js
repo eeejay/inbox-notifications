@@ -2,9 +2,13 @@
 
 const { getBrowserForTab } = require("sdk/tabs/utils");
 const { viewFor } = require("sdk/view/core");
+const data = require("sdk/self").data;
 
 function TitleMutator(tab) {
   this.tab = tab;
+  this.worker = tab.attach({
+    contentScriptFile: data.url("title-mutator-content.js")
+  });
 
   this._unreadCount = 0;
 
@@ -64,9 +68,7 @@ TitleMutator.prototype = {
       "Inbox " : `Inbox (${this.unreadCount}) `;
     this.newTitle = oldTitle.replace(/^Inbox (\(\d+\)\s)?/, replaceString);
     console.debug("mutated:", oldTitle, "=>", this.newTitle);
-    this.tab.attach({
-      contentScript: `document.title = "${this.newTitle}";`,
-    });
+    this.worker.port.emit("change-title", this.newTitle);
   }
 };
 
